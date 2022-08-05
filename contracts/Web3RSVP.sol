@@ -103,4 +103,25 @@ contract Web3RSVP {
             confirmedAttendee(eventId, myEvent.confirmedRSVPs[i])
         }
     }
+
+    function withdrawUnclaimedDeposits(bytes32 eventId) external {
+        CreateEvent memory myEvent = idToEvent[eventId];
+        require(!myEvent.paidOut, "Already paid");
+        require(block.timestamp >= (myEvent.eventTimestamp + 7 days), "Too early")
+        require(msg.sender == myEvent.eventOwner, "Must be event owner");
+
+        uint256 unclaimed = myEvent.confirmedRSVPs.length - myEvent.claimedRSVPs.length;
+
+        uint256 payout = unclaimed * myEvent.deposit;
+
+        myEvent.paidOut = true;
+
+        (bool sent, ) = msg.sender.call{value: payout}("");
+
+        if (!sent) {
+            myEvent.paidOut == false;
+        }
+
+        require(sent, "Failed tosend Ether)
+    }
 }
