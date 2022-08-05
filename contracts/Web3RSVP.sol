@@ -93,4 +93,14 @@ contract Web3RSVP {
 
         require(sent, "Failed to send Ether");
     }
+
+    function confirmAllAttendees(bytes32 eventId) external {
+        CreateEvent memory myEvent = idToEvent[eventID];
+
+        require(msg.sender == myEvent.eventOWner, "Not authorized");
+
+        for (uint8 i = 0; i < myEvent.confirmedRSVPs.length; i++) {
+            confirmedAttendee(eventId, myEvent.confirmedRSVPs[i])
+        }
+    }
 }
