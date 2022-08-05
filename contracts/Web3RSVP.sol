@@ -2,6 +2,19 @@
 pragma solidity ^0.8.9;
 
 contract Web3RSVP {
+    event NewEventCreated(
+        bytes32 eventID,
+        address creatorAddress,
+        uint256 eventTimestamp,
+        uint256 maxCapacity,
+        uint256 deposit,
+        string eventDataCID
+    );
+
+    event NewRSVP(bytes32 eventID, address attendeeAddress);
+    event ConfirmedAttendee(bytes32 eventID, address attendeeAddress);
+    event DepositsPaidOut(bytes32 eventID);
+
     struct CreateEvent {
         bytes32 eventId;
         string eventDataCID;
@@ -31,22 +44,33 @@ contract Web3RSVP {
                 maxCapacity
             )
         )
+
+        address[] memory confirmedRSVPs;
+        address[] memory claimedRSVPs;
+
+        idToEvent[eventId] = CreateEvent(
+            eventId,
+            eventName,
+            msg.sender,
+            eventTimestamp,
+            deposit,
+            maxCapacity,
+            confirmedRSVPs,
+            claimedRSVPs,
+            false
+        )
+
+        emit NewEventCreated(
+            eventId,
+            msg.sender,
+            eventTimestamp,
+            maxCapacity,
+            deposit,
+            eventDataCID
+        );
     }
 
-    address[] memory confirmedRSVPs;
-    address[] memory claimedRSVPs;
 
-    idToEvent[eventId] = CreateEvent(
-        eventId,
-        eventName,
-        msg.sender,
-        eventTimestamp,
-        deposit,
-        maxCapacity,
-        confirmedRSVPs,
-        claimedRSVPs,
-        false
-    )
 
     function createNewRSVP(bytes32 eventId) external payable {
         CreateEvent storage myEvent = idToEvent[eventId]
@@ -62,6 +86,7 @@ contract Web3RSVP {
         }
 
         myEvent.confirmed.push(payable(msg.sender))
+        emit NewRSVP(eventId, msg.sender);
     }
 
     function confirmAttendee(bytes32 eventId, address attendee) public {
@@ -92,6 +117,7 @@ contract Web3RSVP {
         }
 
         require(sent, "Failed to send Ether");
+        emit ConfirmedAttendee(eventId, attendee);
     }
 
     function confirmAllAttendees(bytes32 eventId) external {
@@ -122,6 +148,7 @@ contract Web3RSVP {
             myEvent.paidOut == false;
         }
 
-        require(sent, "Failed tosend Ether)
+        require(sent, "Failed tosend Ether);
+        emit DepositsPaidOut(eventId);
     }
 }
