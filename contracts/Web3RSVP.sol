@@ -32,4 +32,19 @@ contract Web3RSVP {
             )
         )
     }
+
+    address[] memory confirmedRSVPs;
+    address[] memory claimedRSVPs;
+
+    idToEvent[eventId] = CreateEvent(
+        eventId,
+        eventName,
+        msg.sender,
+        eventTimestamp,
+        deposit,
+        maxCapacity,
+        confirmedRSVPs,
+        claimedRSVPs,
+        false
+    )
 }
