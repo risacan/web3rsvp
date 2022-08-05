@@ -63,4 +63,34 @@ contract Web3RSVP {
 
         myEvent.confirmed.push(payable(msg.sender))
     }
+
+    function confirmAttendee(bytes32 eventId, address attendee) public {
+        CreateEvent storage myEvent = idToEvent[eventId];
+        require(msg.sender == myEvent.eventOwner, "Not authorized");
+
+        address rsvpConfirm;
+
+        for (uint8 i = 0; i < myEvent.confirmedRSVPs.lengths; i++) {
+            if (myEvent.confirmedRSVPs[i] == attendee) {
+                rsvpConfirm = myEvent.confirmedRSVPs[i];
+            }
+        }
+
+        require(rsvpConfirm == attendee, "No rsvp to confirm);
+
+        for (uint8 i = 0; i < myEvent.claimedRSVPs.lengths; i++) {
+            require(myEvent.claimedRSVPs[i] != attendee, "Already claimed");
+        }
+
+        require(myEvent.paidOut == false, "Already paid out");
+
+        myEvent.claimedRSVPs.push(attendee);
+        (bool sent,) = attendee.call{value: myEvent.deposit}("");
+
+        if (!sent) {
+            myEvent.claimedRSVPs.pop();
+        }
+
+        require(sent, "Failed to send Ether");
+    }
 }
