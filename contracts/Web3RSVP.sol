@@ -43,7 +43,7 @@ contract Web3RSVP {
                 deposit,
                 maxCapacity
             )
-        )
+        );
 
         address[] memory confirmedRSVPs;
         address[] memory claimedRSVPs;
@@ -58,7 +58,7 @@ contract Web3RSVP {
             confirmedRSVPs,
             claimedRSVPs,
             false
-        )
+        );
 
         emit NewEventCreated(
             eventId,
@@ -85,7 +85,7 @@ contract Web3RSVP {
             require(myEvent.confirmedRSVPs[i] != msg.sender, "Already confirmed");
         }
 
-        myEvent.confirmed.push(payable(msg.sender))
+        myEvent.confirmed.push(payable(msg.sender));
         emit NewRSVP(eventId, msg.sender);
     }
 
