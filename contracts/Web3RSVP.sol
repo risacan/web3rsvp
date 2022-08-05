@@ -95,7 +95,7 @@ contract Web3RSVP {
     }
 
     function confirmAllAttendees(bytes32 eventId) external {
-        CreateEvent memory myEvent = idToEvent[eventID];
+        CreateEvent memory myEvent = idToEvent[eventId];
 
         require(msg.sender == myEvent.eventOWner, "Not authorized");
 
