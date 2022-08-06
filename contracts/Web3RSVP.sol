@@ -81,7 +81,7 @@ contract Web3RSVP {
 
         require(myEvent.confirmedRSVPs.length < myEvent.maxCapacity, "This event has reached capacity");
 
-        for (uint8 i = 0, i < myEvent.confirmedRSVPs.lengths; i++) {
+        for (uint8 i = 0; i < myEvent.confirmedRSVPs.lengths; i++) {
             require(myEvent.confirmedRSVPs[i] != msg.sender, "Already confirmed");
         }
 
