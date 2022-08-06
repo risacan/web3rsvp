@@ -22,11 +22,11 @@ const main = async () => {
     );
     let wait = await txn.wait();
     console.log("NEW EVENT CREATED: ", wait.events[0].event, wait.events[0].args);
+       
+    let eventID = wait.events[0].args.eventID;
+    console.log("Event ID: ", eventID);
 
-    let eventID = wait.evenets[0].args.eventID
-    console.log("Event ID: ", eventID)
-
-    txn = await rsvpContract.createNewEvent(eventID, {value: deposit});
+    txn = await rsvpContract.createNewEvent(eventID, deposit, maxCapacity, eventDataCID);
     wait = await txn.wait();
     console.log("New RSVP: ", wait.events[0].event, wait.events[0].args);
 
