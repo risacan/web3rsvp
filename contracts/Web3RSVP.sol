@@ -35,7 +35,7 @@ contract Web3RSVP {
         uint256 maxCapacity,
         string calldata eventDataCIDs
     ) external {
-        bytes32 evenId = keccak256(
+        bytes32 eventId = keccak256(
             abi.encodePacked(
                 msg.sender,
                 address(this),
@@ -50,7 +50,7 @@ contract Web3RSVP {
 
         idToEvent[eventId] = CreateEvent(
             eventId,
-            eventName,
+            eventDataCIDs,
             msg.sender,
             eventTimestamp,
             deposit,
@@ -66,7 +66,7 @@ contract Web3RSVP {
             eventTimestamp,
             maxCapacity,
             deposit,
-            eventDataCID
+            eventDataCIDs
         );
     }
 
@@ -81,11 +81,11 @@ contract Web3RSVP {
 
         require(myEvent.confirmedRSVPs.length < myEvent.maxCapacity, "This event has reached capacity");
 
-        for (uint8 i = 0; i < myEvent.confirmedRSVPs.lengths; i++) {
+        for (uint8 i = 0; i < myEvent.confirmedRSVPs.length; i++) {
             require(myEvent.confirmedRSVPs[i] != msg.sender, "Already confirmed");
         }
 
-        myEvent.confirmed.push(payable(msg.sender));
+        myEvent.confirmedRSVPs.push(payable(msg.sender));
         emit NewRSVP(eventId, msg.sender);
     }
 
@@ -95,15 +95,15 @@ contract Web3RSVP {
 
         address rsvpConfirm;
 
-        for (uint8 i = 0; i < myEvent.confirmedRSVPs.lengths; i++) {
+        for (uint8 i = 0; i < myEvent.confirmedRSVPs.length; i++) {
             if (myEvent.confirmedRSVPs[i] == attendee) {
                 rsvpConfirm = myEvent.confirmedRSVPs[i];
             }
         }
 
-        require(rsvpConfirm == attendee, "No rsvp to confirm);
+        require(rsvpConfirm == attendee, "No rsvp to confirm");
 
-        for (uint8 i = 0; i < myEvent.claimedRSVPs.lengths; i++) {
+        for (uint8 i = 0; i < myEvent.claimedRSVPs.length; i++) {
             require(myEvent.claimedRSVPs[i] != attendee, "Already claimed");
         }
 
@@ -123,17 +123,17 @@ contract Web3RSVP {
     function confirmAllAttendees(bytes32 eventId) external {
         CreateEvent memory myEvent = idToEvent[eventId];
 
-        require(msg.sender == myEvent.eventOWner, "Not authorized");
+        require(msg.sender == myEvent.eventOwner, "Not authorized");
 
         for (uint8 i = 0; i < myEvent.confirmedRSVPs.length; i++) {
-            confirmedAttendee(eventId, myEvent.confirmedRSVPs[i])
+            confirmAttendee(eventId, myEvent.confirmedRSVPs[i]);
         }
     }
 
     function withdrawUnclaimedDeposits(bytes32 eventId) external {
         CreateEvent memory myEvent = idToEvent[eventId];
         require(!myEvent.paidOut, "Already paid");
-        require(block.timestamp >= (myEvent.eventTimestamp + 7 days), "Too early")
+        require(block.timestamp >= (myEvent.eventTimestamp + 7 days), "Too early");
         require(msg.sender == myEvent.eventOwner, "Must be event owner");
 
         uint256 unclaimed = myEvent.confirmedRSVPs.length - myEvent.claimedRSVPs.length;
@@ -148,7 +148,7 @@ contract Web3RSVP {
             myEvent.paidOut == false;
         }
 
-        require(sent, "Failed tosend Ether);
+        require(sent, "Failed tosend Ether");
         emit DepositsPaidOut(eventId);
     }
 }
