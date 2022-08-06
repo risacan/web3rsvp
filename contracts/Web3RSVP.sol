@@ -27,7 +27,7 @@ contract Web3RSVP {
         bool paidOut;
     }
 
-    mapping(bytes32 => CreateEvent) public idToEvent
+    mapping(bytes32 => CreateEvent) public idToEvent;
 
     function createNewEvent(
         uint256 eventTimestamp,
@@ -73,11 +73,11 @@ contract Web3RSVP {
 
 
     function createNewRSVP(bytes32 eventId) external payable {
-        CreateEvent storage myEvent = idToEvent[eventId]
+        CreateEvent storage myEvent = idToEvent[eventId];
 
         require(msg.value == myEvent.deposit, "NOT ENOUGH");
 
-        require(block.timestamp <= myEvent.eventTimestamp, "Already happened")
+        require(block.timestamp <= myEvent.eventTimestamp, "Already happened");
 
         require(myEvent.confirmedRSVPs.length < myEvent.maxCapacity, "This event has reached capacity");
 
