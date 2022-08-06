@@ -3,7 +3,7 @@
 const hre = require("hardhat");
 
 const main = async () => {
-    const rsvpConstractFactory = await hre.ethers.getContractFactory("Web3RSVP");
+    const rsvpContractFactory = await hre.ethers.getContractFactory("Web3RSVP");
     const rsvpContract = await rsvpContractFactory.deploy();
     await rsvpContract.deployed();
     console.log("Contract deployed to:", rsvpContract.address);
