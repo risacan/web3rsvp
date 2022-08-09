@@ -1,4 +1,5 @@
-require("@nomiclabs/hardhat-waffle");
+// tutorial の  require("@nomicfoundation/hardhat-toolbox") から変更
+require("@nomicfoundation/hardhat-toolbox");
 require("dotenv").config();
 
 module.exports = {
