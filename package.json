@@ -27,6 +27,7 @@
     "typechain": "^8.1.0"
   },
   "dependencies": {
+    "@protofire/subgraph-toolkit": "^0.1.2",
     "dotenv": "^16.0.1"
   }
 }
